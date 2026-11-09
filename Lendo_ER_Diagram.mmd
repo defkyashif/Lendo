@@ -1,0 +1,212 @@
+erDiagram
+    APP_USERS ||--o{ USER_ROLES : has
+    APP_USERS ||--o{ IDENTITY_VERIFICATIONS : submits
+    APP_USERS o|--o{ IDENTITY_VERIFICATIONS : reviews
+    CATEGORIES o|--o{ CATEGORIES : parent_of
+    CATEGORIES ||--o{ LISTINGS : classifies
+    APP_USERS ||--o{ LISTINGS : owns
+    LISTINGS ||--o{ LISTING_PHOTOS : has
+    LISTINGS ||--|| LISTING_LOCATIONS : located_at
+    LISTINGS ||--o{ LISTING_UNAVAILABILITY : blocks
+    LISTINGS ||--o{ BOOKINGS : receives
+    APP_USERS ||--o{ BOOKINGS : borrows
+    BOOKINGS ||--o{ BOOKING_STATUS_HISTORY : tracks
+    BOOKINGS ||--o{ BOOKING_EXTENSIONS : extends
+    BOOKINGS ||--o{ PAYMENTS : paid_by
+    APP_USERS ||--o{ PAYMENTS : payer
+    APP_USERS o|--o{ PAYMENTS : payee
+    APP_USERS ||--o{ PAYOUT_ACCOUNTS : links
+    APP_USERS ||--o{ PAYOUTS : receives
+    PAYOUT_ACCOUNTS ||--o{ PAYOUTS : pays_to
+    BOOKINGS o|--o{ PAYOUTS : settles
+    BOOKINGS ||--o{ HANDOVER_CONFIRMATIONS : confirms
+    APP_USERS ||--o{ HANDOVER_CONFIRMATIONS : confirms_as
+    BOOKINGS ||--o{ CONDITION_REPORTS : documents
+    APP_USERS ||--o{ CONDITION_REPORTS : submits
+    CONDITION_REPORTS ||--o{ CONDITION_REPORT_PHOTOS : contains
+    BOOKINGS ||--o| CONVERSATIONS : opens
+    CONVERSATIONS ||--o{ MESSAGES : contains
+    APP_USERS ||--o{ MESSAGES : sends
+    APP_USERS ||--o{ NOTIFICATIONS : receives
+    APP_USERS o|--o{ NOTIFICATIONS : triggers
+    BOOKINGS o|--o{ NOTIFICATIONS : relates_to
+    BOOKINGS ||--o{ REVIEWS : receives
+    LISTINGS ||--o{ REVIEWS : reviewed_for
+    APP_USERS ||--o{ REVIEWS : writes
+    APP_USERS ||--o{ REVIEWS : is_reviewed
+    REVIEWS ||--o{ REVIEW_REPORTS : reported_in
+    APP_USERS ||--o{ REVIEW_REPORTS : reports
+    APP_USERS ||--o{ SUPPORT_TICKETS : opens
+    BOOKINGS o|--o{ SUPPORT_TICKETS : concerns
+    SUPPORT_TICKETS ||--o{ SUPPORT_TICKET_MESSAGES : contains
+    APP_USERS ||--o{ SUPPORT_TICKET_MESSAGES : sends
+    APP_USERS ||--o{ GUIDELINE_ACCEPTANCES : accepts
+
+    APP_USERS {
+        bigint user_id PK
+        varchar email UK
+        text password_hash
+        varchar first_name
+        varchar last_name
+        boolean is_active
+    }
+    USER_ROLES {
+        bigint user_id PK,FK
+        varchar role_name PK
+    }
+    IDENTITY_VERIFICATIONS {
+        bigint verification_id PK
+        bigint user_id FK
+        varchar document_type
+        varchar status
+        bigint reviewed_by_user_id FK
+    }
+    CATEGORIES {
+        bigint category_id PK
+        bigint parent_id FK
+        varchar name
+        varchar slug UK
+    }
+    LISTINGS {
+        bigint listing_id PK
+        bigint owner_id FK
+        bigint category_id FK
+        varchar title
+        varchar status
+        numeric rate_amount
+        varchar rate_unit
+        numeric deposit_percent
+    }
+    LISTING_PHOTOS {
+        bigint photo_id PK
+        bigint listing_id FK
+        text photo_url
+        boolean is_primary
+    }
+    LISTING_LOCATIONS {
+        bigint listing_id PK,FK
+        varchar city
+        varchar address_line1
+        numeric latitude
+        numeric longitude
+    }
+    LISTING_UNAVAILABILITY {
+        bigint unavailability_id PK
+        bigint listing_id FK
+        bigint created_by_user_id FK
+        timestamptz starts_at
+        timestamptz ends_at
+    }
+    BOOKINGS {
+        bigint booking_id PK
+        bigint listing_id FK
+        bigint borrower_id FK
+        timestamptz starts_at
+        timestamptz ends_at
+        varchar status
+        numeric rental_amount
+        numeric deposit_amount
+    }
+    BOOKING_STATUS_HISTORY {
+        bigint history_id PK
+        bigint booking_id FK
+        varchar previous_status
+        varchar new_status
+    }
+    BOOKING_EXTENSIONS {
+        bigint extension_id PK
+        bigint booking_id FK
+        bigint requested_by_user_id FK
+        timestamptz requested_ends_at
+        varchar status
+    }
+    PAYMENTS {
+        bigint payment_id PK
+        bigint booking_id FK
+        bigint payer_user_id FK
+        bigint payee_user_id FK
+        varchar payment_type
+        numeric amount
+        varchar status
+    }
+    PAYOUT_ACCOUNTS {
+        bigint payout_account_id PK
+        bigint user_id FK
+        text provider_account_token UK
+        boolean is_verified
+    }
+    PAYOUTS {
+        bigint payout_id PK
+        bigint booking_id FK
+        bigint user_id FK
+        bigint payout_account_id FK
+        numeric amount
+        varchar status
+    }
+    HANDOVER_CONFIRMATIONS {
+        bigint confirmation_id PK
+        bigint booking_id FK
+        varchar stage
+        bigint confirmed_by_user_id FK
+    }
+    CONDITION_REPORTS {
+        bigint condition_report_id PK
+        bigint booking_id FK
+        bigint submitted_by_user_id FK
+        varchar stage
+        varchar item_condition
+    }
+    CONDITION_REPORT_PHOTOS {
+        bigint condition_photo_id PK
+        bigint condition_report_id FK
+        text photo_url
+    }
+    CONVERSATIONS {
+        bigint conversation_id PK
+        bigint booking_id FK,UK
+    }
+    MESSAGES {
+        bigint message_id PK
+        bigint conversation_id FK
+        bigint sender_user_id FK
+        text message_body
+    }
+    NOTIFICATIONS {
+        bigint notification_id PK
+        bigint recipient_user_id FK
+        bigint actor_user_id FK
+        bigint booking_id FK
+        varchar notification_type
+    }
+    REVIEWS {
+        bigint review_id PK
+        bigint booking_id FK
+        bigint listing_id FK
+        bigint reviewer_user_id FK
+        bigint reviewee_user_id FK
+        smallint overall_rating
+    }
+    REVIEW_REPORTS {
+        bigint review_report_id PK
+        bigint review_id FK
+        bigint reported_by_user_id FK
+        varchar status
+    }
+    SUPPORT_TICKETS {
+        bigint ticket_id PK
+        bigint user_id FK
+        bigint booking_id FK
+        varchar category
+        varchar status
+    }
+    SUPPORT_TICKET_MESSAGES {
+        bigint ticket_message_id PK
+        bigint ticket_id FK
+        bigint sender_user_id FK
+        text message_body
+    }
+    GUIDELINE_ACCEPTANCES {
+        bigint acceptance_id PK
+        bigint user_id FK
+        varchar guideline_version
+    }

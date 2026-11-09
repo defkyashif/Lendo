@@ -1,0 +1,31 @@
+{
+  "table_count": 25,
+  "tables": [
+    "app_users",
+    "user_roles",
+    "identity_verifications",
+    "categories",
+    "listings",
+    "listing_photos",
+    "listing_locations",
+    "listing_unavailability",
+    "bookings",
+    "booking_status_history",
+    "booking_extensions",
+    "payments",
+    "payout_accounts",
+    "payouts",
+    "handover_confirmations",
+    "condition_reports",
+    "condition_report_photos",
+    "conversations",
+    "messages",
+    "notifications",
+    "reviews",
+    "review_reports",
+    "support_tickets",
+    "support_ticket_messages",
+    "guideline_acceptances"
+  ],
+  "foreign_key_relationship_count": 46
+}

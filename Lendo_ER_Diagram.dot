@@ -1,0 +1,86 @@
+digraph Lendo {
+ graph [rankdir=LR, splines=polyline, overlap=false, nodesep=0.38, ranksep=1.0, pad=0.32, bgcolor="white", fontname="Arial", fontsize=24, labelloc="t", label="LENDO  |  PostgreSQL 18 ER DIAGRAM", compound=true];
+ node [shape=plain, fontname="Arial", fontsize=9];
+ edge [color="#64748b", penwidth=1.0, arrowsize=0.65, arrowhead=vee];
+ subgraph cluster_0 { label="ACCOUNTS & IDENTITY"; style="rounded,filled"; color="#cbd5e1"; fillcolor="#f8fafc"; fontname="Arial"; fontsize=13; margin=18;
+  "app_users" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>APP_USERS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">email (unique)</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">first_name, last_name</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">is_active</TD></TR></TABLE>>];
+  "user_roles" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>USER_ROLES</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK/FK user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK role_name</TD></TR></TABLE>>];
+  "identity_verifications" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>IDENTITY_VERIFICATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK verification_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK user_id, reviewed_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">document_type, status</TD></TR></TABLE>>];
+  "guideline_acceptances" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>GUIDELINE_ACCEPTANCES</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK acceptance_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">guideline_version</TD></TR></TABLE>>];
+ }
+ subgraph cluster_1 { label="CATALOGUE & AVAILABILITY"; style="rounded,filled"; color="#cbd5e1"; fillcolor="#f8fafc"; fontname="Arial"; fontsize=13; margin=18;
+  "categories" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>CATEGORIES</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK category_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK parent_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">name, slug</TD></TR></TABLE>>];
+  "listings" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>LISTINGS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK listing_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK owner_id, category_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">title, status</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">rate_amount, rate_unit</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">deposit_percent</TD></TR></TABLE>>];
+  "listing_photos" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>LISTING_PHOTOS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK photo_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK listing_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">photo_url, is_primary</TD></TR></TABLE>>];
+  "listing_locations" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>LISTING_LOCATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK/FK listing_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">city, postal_code</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">exact address + coordinates</TD></TR></TABLE>>];
+  "listing_unavailability" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>LISTING_UNAVAILABILITY</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK unavailability_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK listing_id, created_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">starts_at, ends_at</TD></TR></TABLE>>];
+ }
+ subgraph cluster_2 { label="RENTAL LIFECYCLE"; style="rounded,filled"; color="#cbd5e1"; fillcolor="#f8fafc"; fontname="Arial"; fontsize=13; margin=18;
+  "bookings" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>BOOKINGS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK booking_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK listing_id, borrower_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">starts_at, ends_at, status</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">rental_amount, deposit_amount</TD></TR></TABLE>>];
+  "booking_status_history" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>BOOKING_STATUS_HISTORY</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK history_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, changed_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">previous_status, new_status</TD></TR></TABLE>>];
+  "booking_extensions" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>BOOKING_EXTENSIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK extension_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, requested_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">requested_ends_at, status</TD></TR></TABLE>>];
+  "handover_confirmations" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>HANDOVER_CONFIRMATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK confirmation_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, confirmed_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">stage: pickup / return</TD></TR></TABLE>>];
+  "condition_reports" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>CONDITION_REPORTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK condition_report_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, submitted_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">stage, item_condition</TD></TR></TABLE>>];
+  "condition_report_photos" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>CONDITION_REPORT_PHOTOS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK condition_photo_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK condition_report_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">photo_url</TD></TR></TABLE>>];
+ }
+ subgraph cluster_3 { label="PAYMENTS & PAYOUTS"; style="rounded,filled"; color="#cbd5e1"; fillcolor="#f8fafc"; fontname="Arial"; fontsize=13; margin=18;
+  "payments" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>PAYMENTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK payment_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, payer_user_id, payee_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">payment_type, amount, status</TD></TR></TABLE>>];
+  "payout_accounts" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>PAYOUT_ACCOUNTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK payout_account_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">provider token, is_verified</TD></TR></TABLE>>];
+  "payouts" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>PAYOUTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK payout_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, user_id, payout_account_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">amount, status</TD></TR></TABLE>>];
+ }
+ subgraph cluster_4 { label="COMMUNICATION & TRUST"; style="rounded,filled"; color="#cbd5e1"; fillcolor="#f8fafc"; fontname="Arial"; fontsize=13; margin=18;
+  "conversations" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>CONVERSATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK conversation_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id (unique)</TD></TR></TABLE>>];
+  "messages" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>MESSAGES</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK message_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK conversation_id, sender_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">message_body, sent_at</TD></TR></TABLE>>];
+  "notifications" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>NOTIFICATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK notification_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK recipient_user_id, actor_user_id, booking_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">type, read_at</TD></TR></TABLE>>];
+  "reviews" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>REVIEWS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK review_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK booking_id, listing_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK reviewer_user_id, reviewee_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">ratings 1–5</TD></TR></TABLE>>];
+  "review_reports" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>REVIEW_REPORTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK review_report_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK review_id, reported_by_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">reason, status</TD></TR></TABLE>>];
+  "support_tickets" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>SUPPORT_TICKETS</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK ticket_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK user_id, booking_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">category, priority, status</TD></TR></TABLE>>];
+  "support_ticket_messages" [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" COLOR="#64748b"><TR><TD BGCOLOR="#1e293b" CELLPADDING="6"><FONT COLOR="white"><B>SUPPORT_TICKET_MESSAGES</B></FONT></TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">PK ticket_message_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">FK ticket_id, sender_user_id</TD></TR><TR><TD ALIGN="LEFT" CELLPADDING="3">message_body, sent_at</TD></TR></TABLE>>];
+ }
+ "user_roles" -> "app_users";
+ "identity_verifications" -> "app_users";
+ "identity_verifications" -> "app_users";
+ "guideline_acceptances" -> "app_users";
+ "categories" -> "categories";
+ "listings" -> "app_users";
+ "listings" -> "categories";
+ "listing_photos" -> "listings";
+ "listing_locations" -> "listings";
+ "listing_unavailability" -> "listings";
+ "listing_unavailability" -> "app_users";
+ "bookings" -> "listings";
+ "bookings" -> "app_users";
+ "booking_status_history" -> "bookings";
+ "booking_status_history" -> "app_users";
+ "booking_extensions" -> "bookings";
+ "booking_extensions" -> "app_users";
+ "booking_extensions" -> "app_users";
+ "handover_confirmations" -> "bookings";
+ "handover_confirmations" -> "app_users";
+ "condition_reports" -> "bookings";
+ "condition_reports" -> "app_users";
+ "condition_report_photos" -> "condition_reports";
+ "payments" -> "bookings";
+ "payments" -> "app_users";
+ "payments" -> "app_users";
+ "payout_accounts" -> "app_users";
+ "payouts" -> "bookings";
+ "payouts" -> "app_users";
+ "payouts" -> "payout_accounts";
+ "conversations" -> "bookings";
+ "messages" -> "conversations";
+ "messages" -> "app_users";
+ "notifications" -> "app_users";
+ "notifications" -> "app_users";
+ "notifications" -> "bookings";
+ "reviews" -> "bookings";
+ "reviews" -> "listings";
+ "reviews" -> "app_users";
+ "reviews" -> "app_users";
+ "review_reports" -> "reviews";
+ "review_reports" -> "app_users";
+ "support_tickets" -> "app_users";
+ "support_tickets" -> "bookings";
+ "support_ticket_messages" -> "support_tickets";
+ "support_ticket_messages" -> "app_users";
+}
